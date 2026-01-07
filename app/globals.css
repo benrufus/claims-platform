@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-orange: #ff8c00;
+  --dark-bg: #1a1a1a;
+  --dark-card: #2a2a2a;
+  --dark-border: #3a3a3a;
+  --dark-text: #ffffff;
+  --dark-muted: #9ca3af;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* Data-8 Postcode Lookup Styling */
+.data8-postcodelookup-dropdown {
+  background: var(--dark-card) !important;
+  border: 1px solid var(--dark-border) !important;
+  border-radius: 0.5rem !important;
+  margin-top: 0.5rem !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+  color: #333 !important;
+}
+
+.data8-postcodelookup-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.data8-postcodelookup-list li {
+  padding: 0.75rem 1rem !important;
+  cursor: pointer !important;
+  color: var(--dark-text) !important;
+  border-bottom: 1px solid var(--dark-border) !important;
+  transition: background-color 0.2s !important;
+}
+
+.data8-postcodelookup-list li:hover {
+  background-color: rgba(255, 140, 0, 0.1) !important;
+}
+
+.data8-postcodelookup-list li:last-child {
+  border-bottom: none !important;
+}
+
+.data8-postcodelookup-ok,
+.data8-postcodelookup-cancel {
+  padding: 0.5rem 1rem !important;
+  margin: 0.5rem !important;
+  border-radius: 0.375rem !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+}
+
+.data8-postcodelookup-ok {
+  background-color: var(--primary-orange) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.data8-postcodelookup-ok:hover {
+  background-color: #e67e00 !important;
+}
+
+.data8-postcodelookup-cancel {
+  background-color: var(--dark-border) !important;
+  color: var(--dark-text) !important;
+  border: none !important;
+}
+
+.data8-postcodelookup-cancel:hover {
+  background-color: #4a4a4a !important;
+}
+
+/* Style the Find button that Data-8 creates */
+.postcodeLookup,
+button.postcodeLookup {
+  background-color: var(--primary-orange) !important;
+  color: white !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  white-space: nowrap !important;
+  margin-left: 0.5rem !important;
+  height: fit-content !important;
+}
+
+.postcodeLookup:hover,
+button.postcodeLookup:hover {
+  background-color: #e67e00 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Hide any Find button that appears outside the flex container */
+.form-group > .postcodeLookup,
+.space-y-4 > .postcodeLookup {
+  display: none !important;
+}
+
+/* Show the Find button inside flex container */
+.flex .postcodeLookup {
+  display: inline-block !important;
+}
+
+/* Ensure postcode input takes most of the width */
+#postcode {
+  flex: 1 !important;
+}
+
+/* Signature Pad Styling */
+.signature-canvas {
+  border: 2px solid var(--dark-border);
+  border-radius: 0.5rem;
+  background: white;
+  cursor: crosshair;
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply bg-primary-orange text-white hover:bg-[#e67e00] hover:-translate-y-0.5;
+  }
+  .btn-secondary {
+    @apply bg-dark-border text-dark-text hover:bg-[#4a4a4a];
+  }
+  .card {
+    @apply bg-dark-card p-8 rounded-xl border border-dark-border;
+  }
+  .input {
+    @apply w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-dark-text focus:outline-none focus:border-primary-orange transition-colors;
+  }
+  .input-error {
+    @apply border-red-500;
+  }
+  .label {
+    @apply block text-sm font-medium mb-2 text-dark-text;
+  }
+  .label-required::after {
+    @apply text-red-500;
+    content: ' *';
+  }
+  .error-message {
+    @apply text-red-400 text-sm mt-1;
+  }
+  .form-group {
+    @apply mb-4;
+  }
+  .spinner {
+    @apply inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
+  }
+}
