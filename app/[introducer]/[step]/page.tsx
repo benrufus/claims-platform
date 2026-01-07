@@ -53,70 +53,77 @@ export default function ClaimFormPage() {
   }, [formData, introducerSlug, dataLoaded, stepSlug])
 
   useEffect(() => {
-    if (stepSlug === 'p4' && mounted && typeof window !== 'undefined') {
+    if (stepSlug === 'p4' && typeof window !== 'undefined') {
+      let initAttempts = 0
+      const maxAttempts = 20
+      
       const checkAndInit = () => {
-        if ((window as any).jQuery && (window as any).data8) {
-          try {
-            // Wait for jQuery to be fully ready
-            (window as any).jQuery(function($: any) {
-              // Add additional delay to ensure DOM is ready
-              setTimeout(() => {
-                const postcodeInput = document.getElementById('postcode')
-                if (!postcodeInput) {
-                  console.warn('Postcode input not found, retrying...')
-                  setTimeout(checkAndInit, 200)
-                  return
-                }
-                
-                // Initialize Data-8
-                new (window as any).data8.postcodeLookupButton([
-                  { element: 'postcode', field: 'postcode' },
-                  { element: 'line1', field: 'line1' },
-                  { element: 'line2', field: 'line2' },
-                  { element: 'city', field: 'town' },
-                  { element: 'county', field: 'county' }
-                ], {
-                  ajaxKey: 'KP47-XBK7-N7ZW-VQDG',
-                  license: 'WebClickFull'
-                }).show()
-                
-                // Remove duplicate Find buttons - keep only the first one
-                setTimeout(() => {
-                  const buttons = document.querySelectorAll('.postcodeLookup')
-                  if (buttons.length > 1) {
-                    for (let i = 1; i < buttons.length; i++) {
-                      buttons[i].remove()
-                    }
-                  }
-                  console.log('Data-8 initialized successfully')
-                }, 200)
-                
-                // Watch for address changes
-                const watchInterval = setInterval(() => {
-                  const line1 = (document.getElementById('line1') as HTMLInputElement)?.value
-                  if (line1 && line1 !== formData.address_line1) {
-                    setFormData(prev => ({
-                      ...prev,
-                      address_line1: line1,
-                      address_line2: (document.getElementById('line2') as HTMLInputElement)?.value || '',
-                      city: (document.getElementById('city') as HTMLInputElement)?.value || '',
-                      county: (document.getElementById('county') as HTMLInputElement)?.value || '',
-                      postcode: (document.getElementById('postcode') as HTMLInputElement)?.value || ''
-                    }))
-                  }
-                }, 500)
-              }, 500) // Wait 500ms for React to fully render the input
-            })
-          } catch (error) {
-            console.error('Data-8 error:', error)
+        initAttempts++
+        
+        // Check if libraries are loaded
+        if (!(window as any).jQuery || !(window as any).data8) {
+          if (initAttempts < maxAttempts) {
+            setTimeout(checkAndInit, 200)
           }
-        } else {
-          setTimeout(checkAndInit, 100)
+          return
+        }
+        
+        // Check if postcode input exists
+        const postcodeInput = document.getElementById('postcode')
+        if (!postcodeInput) {
+          if (initAttempts < maxAttempts) {
+            setTimeout(checkAndInit, 200)
+          }
+          return
+        }
+        
+        try {
+          // Initialize Data-8
+          new (window as any).data8.postcodeLookupButton([
+            { element: 'postcode', field: 'postcode' },
+            { element: 'line1', field: 'line1' },
+            { element: 'line2', field: 'line2' },
+            { element: 'city', field: 'town' },
+            { element: 'county', field: 'county' }
+          ], {
+            ajaxKey: 'KP47-XBK7-N7ZW-VQDG',
+            license: 'WebClickFull'
+          }).show()
+          
+          // Remove duplicate Find buttons
+          setTimeout(() => {
+            const buttons = document.querySelectorAll('.postcodeLookup')
+            if (buttons.length > 1) {
+              for (let i = 1; i < buttons.length; i++) {
+                buttons[i].remove()
+              }
+            }
+            console.log('✅ Data-8 initialized successfully')
+          }, 200)
+          
+          // Watch for address changes
+          const watchInterval = setInterval(() => {
+            const line1 = (document.getElementById('line1') as HTMLInputElement)?.value
+            if (line1 && line1 !== formData.address_line1) {
+              setFormData(prev => ({
+                ...prev,
+                address_line1: line1,
+                address_line2: (document.getElementById('line2') as HTMLInputElement)?.value || '',
+                city: (document.getElementById('city') as HTMLInputElement)?.value || '',
+                county: (document.getElementById('county') as HTMLInputElement)?.value || '',
+                postcode: (document.getElementById('postcode') as HTMLInputElement)?.value || ''
+              }))
+            }
+          }, 500)
+        } catch (error) {
+          console.error('❌ Data-8 initialization error:', error)
         }
       }
-      checkAndInit()
+      
+      // Start with a small delay to let React render
+      setTimeout(checkAndInit, 100)
     }
-  }, [stepSlug, mounted])
+  }, [stepSlug])
 
   const handleInputChange = (fieldId: string, value: any) => {
     setFormData({ ...formData, [fieldId]: value })
